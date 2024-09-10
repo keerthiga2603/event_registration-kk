@@ -27,3 +27,5 @@ How it Works:
 
 4. This project is built using python , with oops concept integrated for the event management application.
 
+   Attached CLASS DIAGRAM is referred by the event registration application contents and uml diagram is drawn.
+
