@@ -1,0 +1,107 @@
+import random
+class Event:
+    def __init__(self, event_id, name, address, participation_fee, audience_fee):
+        self.event_id = event_id
+        self.name = name
+        self.address = address
+        self.participation_fee = participation_fee
+        self.audience_fee = audience_fee
+class Receipt:
+    def __init__(self, name):
+        self.name = name
+        self.events = []  # Stores a list of registered events
+        self.total_fee = 0  # Accumulates the total fee
+
+    def add_event(self, event_name, role, fee, address, food_token):
+        self.events.append({
+            "event_name": event_name,
+            "role": role,
+            "fee": fee,
+            "address": address,
+            "food_token": food_token
+        })
+        self.total_fee += fee
+
+    def display_receipt(self):
+        print("\n--- Final Registration Receipt ---")
+        print(f"Name: {self.name}")
+        print(f"Total Events Registered: {len(self.events)}")
+        for i, event in enumerate(self.events, 1):
+            print(f"\nEvent {i}: {event['event_name']}")
+            print(f"Role: {event['role'].capitalize()}")
+            print(f"Fee: ${event['fee']}")
+            print(f"Address: {event['address']}")
+            print(f"Food Token: {event['food_token']}")
+        print(f"\nTotal Fee Paid: ${self.total_fee}")
+        print("----------------------------------\n")
+class EventManager:
+    def __init__(self):
+        self.events = [
+            Event(1, "Dance", "Auditorium A", 50, 30),
+            Event(2, "Song", "Auditorium B", 40, 20),
+            Event(3, "As You Like It", "Open Stage", 60, 35),
+            Event(4, "Skit", "Main Hall", 55, 25),
+            Event(5, "Mime", "Stage C", 50, 30),
+            Event(6, "Debate", "Conference Room", 45, 25),
+            Event(7, "Paper Presentations", "Room D", 70, 40),
+        ]
+
+    def display_events(self):
+        print("\nAvailable Events:")
+        for event in self.events:
+            print(f"{event.event_id}. {event.name} - Participation Fee: ${event.participation_fee}, Audience Fee: ${event.audience_fee}, Address: {event.address}")
+        print()
+
+    def find_event_by_id(self, event_id):
+        return next((event for event in self.events if event.event_id == event_id), None)
+
+    def register_for_event(self, event_id, name, role, receipt):
+        event = self.find_event_by_id(event_id)
+        if not event:
+            print("Invalid event ID.")
+            return None
+
+        if role == "participant":
+            fee = event.participation_fee
+        elif role == "audience":
+            fee = event.audience_fee
+        else:
+            print("Invalid role. Choose either 'participant' or 'audience'.")
+            return None
+        food_token = random.randint(1000, 9999)
+        receipt.add_event(event.name, role, fee, event.address, food_token)
+        print(f"Successfully registered for {event.name} as a {role}.\n")
+def main():
+    manager = EventManager()
+
+    print("\n--- Welcome to the Event Management System ---")
+    user_name = input("Enter your name: ")
+    user_receipt = Receipt(user_name)
+
+    while True:
+        print("\n1. View Events")
+        print("2. Register for an Event")
+        print("3. Complete Registration and Get Final Receipt")
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            manager.display_events()
+        elif choice == "2":
+            manager.display_events()
+            try:
+                event_id = int(input("Enter the event ID you want to register for: "))
+                role = input("Enter your role ('participant' or 'audience'): ").lower()
+                manager.register_for_event(event_id, user_name, role, user_receipt)
+            except ValueError:
+                print("Invalid input. Please enter valid data.")
+        elif choice == "3":
+            if len(user_receipt.events) > 0:
+                user_receipt.display_receipt()
+            else:
+                print("You haven't registered for any events yet.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
